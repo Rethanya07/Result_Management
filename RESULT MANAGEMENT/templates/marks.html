@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Marks</title>
+    <link rel="stylesheet" href="static/styles2.css">
+</head>
+<body>
+    <div class="container">
+        <h1 id="welcome-message"></h1>
+        <table id="student-marks-table">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Subject</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Student marks will be appended here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const register = urlParams.get('register');
+        const name = urlParams.get('name');
+
+        document.getElementById('welcome-message').innerText = `WELCOME ${name}`;
+
+        const studentMarks = JSON.parse(localStorage.getItem('marks')).filter(mark => mark.register === register);
+        const table = document.getElementById('student-marks-table').querySelector('tbody');
+
+        studentMarks.forEach((mark, index) => {
+            const row = table.insertRow(index);
+            row.insertCell(0).innerText = index + 1;
+            row.insertCell(1).innerText = mark.subject;
+            row.insertCell(2).innerText = mark.grade;
+        });
+    </script>
+</body>
+</html>

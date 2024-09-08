@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="static/styles2.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <div class="year-buttons">
+            <button onclick="navigateTo('first')">First Year</button>
+            <button onclick="navigateTo('second')">Second Year</button>
+            <button onclick="navigateTo('third')">Third Year</button>
+            <button onclick="navigateTo('final')">Final Year</button>
+        </div>
+    </div>
+
+    <script>
+        function navigateTo(year) {
+            if (year === 'third') {
+                window.location.href = 'third-year.html';
+            }
+            // Add navigation for other years as needed
+        }
+    </script>
+</body>
+</html>

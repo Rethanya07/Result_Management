@@ -1,0 +1,94 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    background-image: url(loginpic.jpg);
+    background-size: cover;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    /*background-color: #1e1e1e;*/
+    background-origin:padding-box;
+    backdrop-filter: blur(10px); 
+    border-radius: 10px;
+    overflow:visible;
+    width: 300px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.form-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    background-color: #333333;
+}
+
+.tab {
+    padding: 15px;
+    width: 50%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.tab:hover {
+    background-color: #444444;
+}
+
+#user-login:checked ~ .form-content .user-login-form,
+#admin-login:checked ~ .form-content .admin-login-form {
+    display: block;
+}
+
+.form-content {
+    position: relative;
+    width: 165%;
+    display: flex;
+}
+
+.form {
+    display: none;
+    padding: 20px;
+    width: 50%;
+}
+
+.form h2 {
+    margin-bottom: 20px;
+}
+
+.form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #333333;
+    border: 1px solid #444444;
+    color: #ffffff;
+    border-radius: 5px;
+}
+
+.form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #6200ea;
+    border: none;
+    color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form button:hover {
+    background-color: #3700b3;
+}

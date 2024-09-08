@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Third Year</title>
+    <link rel="stylesheet" href="static/styles2.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Third Year</h1>
+        <div class="tabs">
+            <button onclick="showTab('student-list')">Student List</button>
+            <button onclick="showTab('mark')">Mark</button>
+            <button onclick="showTab('result')">Result</button>
+            <button onclick="showTab('settings')">Settings</button>
+        </div>
+        <div class="tab-content" id="student-list">
+            <h2>Student List</h2>
+            <form id="student-form">
+                <input type="text" id="student-name" placeholder="Name" required>
+                <input type="text" id="student-register" placeholder="Register Number" required>
+                <input type="password" id="student-password" placeholder="Password" required>
+                <button type="button" onclick="addStudent()">Add Student</button>
+            </form>
+            <table id="student-table">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Register Number</th>
+                        <th>Name</th>
+                        <th>Password</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Student list will be appended here -->
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-content" id="mark">
+            <h2>Mark</h2>
+            <form id="mark-form">
+                <input type="text" id="mark-register" placeholder="Register Number" required>
+                <input type="text" id="mark-subject" placeholder="Subject" required>
+                <input type="text" id="mark-grade" placeholder="Grade" required>
+                <button type="button" onclick="addMark()">Add Mark</button>
+            </form>
+            <table id="mark-table">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Subject</th>
+                        <th>Grade</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Mark list will be appended here -->
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-content" id="result">
+            <h2>Result</h2>
+            <table id="result-table">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Register Number</th>
+                        <th>Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Result list will be appended here -->
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-content" id="settings">
+            <h2>Settings</h2>
+            <form id="admin-form">
+                <input type="text" id="admin-username" placeholder="New Username" required>
+                <input type="password" id="admin-password" placeholder="New Password" required>
+                <button type="button" onclick="updateAdminCredentials()">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const students = [];
+        const marks = [];
+        let adminCredentials = { username: 'admin', password: 'admin' };
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            document.getElementById(tabId).style.display = 'block';
+        }
+
+        function addStudent() {
+            const name = document.getElementById('student-name').value;
+            const register = document.getElementById('student-register').value;
+            const password = document.getElementById('student-password').value;
+
+            const table = document.getElementById('student-table').querySelector('tbody');
+            const rowCount = table.rows.length;
+            const row = table.insertRow(rowCount);
+
+            row.insertCell(0).innerText = rowCount + 1;
+            row.insertCell(1).innerText = register;
+            row.insertCell(2).innerText = name;
+            row.insertCell(3).innerText = password;
+            row.insertCell(4).innerHTML = `
+                <button onclick="editStudent(this)">Edit</button>
+                <button onclick="deleteStudent(this)">Delete</button>
+            `;
+
+            students.push({ register, name, password });
+            updateResultTable();
+            document.getElementById('student-form').reset();
+        }
+
+        function editStudent(button) {
+            const row = button.parentNode.parentNode;
+            const name = row.cells[2].innerText;
+            const register = row.cells[1].innerText;
+            const password = row.cells[3].innerText;
+
+            document.getElementById('student-name').value = name;
+            document.getElementById('student-register').value = register;
+            document.getElementById('student-password').value = password;
+
+            deleteStudent(button);
+        }
+
+        function deleteStudent(button) {
+            const row = button.parentNode.parentNode;
+            const register = row.cells[1].innerText;
+            row.parentNode.removeChild(row);
+
+            const index = students.findIndex(student => student.register === register);
+            if (index > -1) students.splice(index, 1);
+
+            updateStudentSerialNumbers();
+            updateResultTable();
+        }
+
+        function updateStudentSerialNumbers() {
+            const rows = document.getElementById('student-table').querySelector('tbody').rows;
+            for (let i = 0; i < rows.length; i++) {
+                rows[i].cells[0].innerText = i + 1;
+            }
+        }
+
+        function addMark() {
+            const register = document.getElementById('mark-register').value;
+            const subject = document.getElementById('mark-subject').value;
+            const grade = document.getElementById('mark-grade').value;
+
+            const table = document.getElementById('mark-table').querySelector('tbody');
+            const rowCount = table.rows.length;
+            const row = table.insertRow(rowCount);
+
+            row.insertCell(0).innerText = rowCount + 1;
+            row.insertCell(1).innerText = subject;
+            row.insertCell(2).innerText = grade;
+            row.insertCell(3).innerHTML = `
+                <button onclick="editMark(this)">Edit</button>
+                <button onclick="deleteMark(this)">Delete</button>
+            `;
+
+            marks.push({ register, subject, grade });
+            document.getElementById('mark-form').reset();
+        }
+
+        function editMark(button) {
+            const row = button.parentNode.parentNode;
+            const subject = row.cells[1].innerText;
+            const grade = row.cells[2].innerText;
+            const register = marks.find(mark => mark.subject === subject && mark.grade === grade).register;
+
+            document.getElementById('mark-register').value = register;
+            document.getElementById('mark-subject').value = subject;
+            document.getElementById('mark-grade').value = grade;
+
+            deleteMark(button);
+        }
+
+        function deleteMark(button) {
+            const row = button.parentNode.parentNode;
+            const subject = row.cells[1].innerText;
+            const grade = row.cells[2].innerText;
+            row.parentNode.removeChild(row);
+
+            const index = marks.findIndex(mark => mark.subject === subject && mark.grade === grade);
+            if (index > -1) marks.splice(index, 1);
+
+            updateMarkSerialNumbers();
+        }
+
+        function updateMarkSerialNumbers() {
+            const rows = document.getElementById('mark-table').querySelector('tbody').rows;
+            for (let i = 0; i < rows.length; i++) {
+                rows[i].cells[0].innerText = i + 1;
+            }
+        }
+
+        function updateResultTable() {
+            const table = document.getElementById('result-table').querySelector('tbody');
+            table.innerHTML = '';
+            students.forEach((student, index) => {
+                const row = table.insertRow(index);
+                row.insertCell(0).innerText = index + 1;
+                row.insertCell(1).innerText = student.register;
+                row.insertCell(2).innerText = student.name;
+                row.insertCell(3).innerHTML = `<button onclick="viewStudentMarks('${student.register}', '${student.name}')">Marks</button>`;
+            });
+        }
+
+        function viewStudentMarks(register, name) {
+            window.location.href = `marks.html?register=${register}&name=${name}`;
+        }
+
+        function updateAdminCredentials() {
+            const newUsername = document.getElementById('admin-username').value;
+            const newPassword = document.getElementById('admin-password').value;
+
+            if (newUsername && newPassword) {
+                adminCredentials.username = newUsername;
+                adminCredentials.password = newPassword;
+                alert('Admin credentials updated successfully.');
+                document.getElementById('admin-form').reset();
+            } else {
+                alert('Please fill in both fields.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showTab('student-list');
+            if (!localStorage.getItem('adminCredentials')) {
+                localStorage.setItem('adminCredentials', JSON.stringify(adminCredentials));
+            } else {
+                adminCredentials = JSON.parse(localStorage.getItem('adminCredentials'));
+            }
+
+            if (!localStorage.getItem('students')) {
+                localStorage.setItem('students', JSON.stringify(students));
+            } else {
+                students.push(...JSON.parse(localStorage.getItem('students')));
+                students.forEach((student, index) => {
+                    const table = document.getElementById('student-table').querySelector('tbody');
+                    const row = table.insertRow(index);
+
+                    row.insertCell(0).innerText = index + 1;
+                    row.insertCell(1).innerText = student.register;
+                    row.insertCell(2).innerText = student.name;
+                    row.insertCell(3).innerText = student.password;
+                    row.insertCell(4).innerHTML = `
+                        <button onclick="editStudent(this)">Edit</button>
+                        <button onclick="deleteStudent(this)">Delete</button>
+                    `;
+                });
+                updateResultTable();
+            }
+
+            if (!localStorage.getItem('marks')) {
+                localStorage.setItem('marks', JSON.stringify(marks));
+            } else {
+                marks.push(...JSON.parse(localStorage.getItem('marks')));
+                marks.forEach((mark, index) => {
+                    const table = document.getElementById('mark-table').querySelector('tbody');
+                    const row = table.insertRow(index);
+
+                    row.insertCell(0).innerText = index + 1;
+                    row.insertCell(1).innerText = mark.subject;
+                    row.insertCell(2).innerText = mark.grade;
+                    row.insertCell(3).innerHTML = `
+                        <button onclick="editMark(this)">Edit</button>
+                        <button onclick="deleteMark(this)">Delete</button>
+                    `;
+                });
+            }
+        });
+
+        window.onbeforeunload = () => {
+            localStorage.setItem('students', JSON.stringify(students));
+            localStorage.setItem('marks', JSON.stringify(marks));
+            localStorage.setItem('adminCredentials', JSON.stringify(adminCredentials));
+        };
+    </script>
+</body>
+</html>
