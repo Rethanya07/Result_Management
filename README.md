@@ -12,7 +12,7 @@ Secure password storage using bcrypt.
 2.Student Management:
 Add and manage student details like name, roll number, and class.
 
-3. Management:
+3.Management:
 Add, update, and view results for students.
 View results based on student ID, subjects, and marks.
 
@@ -37,8 +37,8 @@ git clone https://github.com/your-username/college-result-management.git
 2.Install the required Python dependencies:
 pip install -r requirements.txt
 
-Set up MySQL database:
-3.Create a database named college_results.
+3.Set up MySQL database:
+Create a database named college_results.
 Run the SQL scripts (or queries) from the /database directory to create the necessary tables.
 
 4.Set up configuration:
